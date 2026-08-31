@@ -72,6 +72,20 @@ class PersonModel {
       });
     }
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'adult': adult,
+      'gender': gender,
+      'id': id,
+      'known_for_department': knownForDepartment,
+      'name': name,
+      'original_name': originalName,
+      'popularity': popularity,
+      'profile_path': profilePath,
+      'known_for': knownFor?.map((v) => v.toJson()).toList(),
+    };
+  }
 }
 
 class KnownFor {
@@ -157,5 +171,29 @@ class KnownFor {
     originCountry = (json['origin_country'] as List?)
         ?.map((e) => e.toString())
         .toList();
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'adult': adult,
+      'backdrop_path': backdropPath,
+      'id': id,
+      'title': title,
+      'original_title': originalTitle,
+      'overview': overview,
+      'poster_path': posterPath,
+      'media_type': mediaType,
+      'original_language': originalLanguage,
+      'genre_ids': genreIds,
+      'popularity': popularity,
+      'release_date': releaseDate,
+      'video': video,
+      'vote_average': voteAverage,
+      'vote_count': voteCount,
+      'name': name,
+      'original_name': originalName,
+      'first_air_date': firstAirDate,
+      'origin_country': originCountry,
+    };
   }
 }

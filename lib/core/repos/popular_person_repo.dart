@@ -5,15 +5,15 @@ import 'package:celevo/core/network/dio%20client/dio_exception.dart';
 import 'package:dio/dio.dart';
 
 class PopularPersonRepo {
-  final BaseApiService _apiService;
+  final BaseApiService apiService;
 
-  PopularPersonRepo({required this._apiService});
+  PopularPersonRepo({required this.apiService});
 
   Future<PopularPersonModel> getPopularPersons({
     int page = 1,
   }) async {
     try {
-      final response = await _apiService.get(
+      final response = await apiService.get(
         ApiConstants.popularPersons,
         queryParameters: {
           'api_key': ApiConstants.apiKey,
@@ -25,12 +25,14 @@ class PopularPersonRepo {
         },
       );
 
-      return PopularPersonModel.fromJson(
-        response.data as Map<String, dynamic>,
-      );
+      final dynamic data = response.data;
+      if (data is Map<String, dynamic>) {
+        return PopularPersonModel.fromJson(data);
+      }
+      throw Exception('Invalid response format');
     } on DioException catch (e) {
-      DioExceptionHandler.handle(e);
-      rethrow;
+      final message = DioExceptionHandler.handle(e);
+      throw Exception(message);
     } catch (e) {
       throw Exception('Failed to get popular persons: $e');
     }
