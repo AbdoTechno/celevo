@@ -1,177 +1,91 @@
 import 'package:celevo/core/di/injection_container.dart';
-import 'package:celevo/core/models/popular_person_model.dart';
 import 'package:celevo/core/repos/popular_person_repo.dart';
-import 'package:celevo/core/sizes/app_sizes.dart';
 import 'package:celevo/core/theme/app_colors.dart';
+import 'package:celevo/features/chat/view/chat_view.dart';
+import 'package:celevo/features/favorites/view/favorites_view.dart';
+import 'package:celevo/features/home/cubit/popular_persons_cubit.dart';
+import 'package:celevo/features/home/widgets/department_filter_list.dart';
+import 'package:celevo/features/home/widgets/home_search_bar.dart';
 import 'package:celevo/features/home/widgets/popular_people_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 
-class HomeView extends StatefulWidget {
+class HomeView extends StatelessWidget {
   const HomeView({super.key});
 
   @override
-  State<HomeView> createState() => _HomeViewState();
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) =>
+          PopularPersonsCubit(getIt<PopularPersonRepo>())..getPopularPersons(),
+      child: const _HomeViewBody(),
+    );
+  }
 }
 
-class _HomeViewState extends State<HomeView> {
-  String? selectedTopic;
-
-  final repo = getIt<PopularPersonRepo>();
-
-  PopularPersonModel? popularPersons;
-
-  bool isLoading = true;
-
-  Future<void> getPopularPersons() async {
-    try {
-      final data = await repo.getPopularPersons();
-
-      if (!mounted) return;
-
-      setState(() {
-        popularPersons = data;
-        isLoading = false;
-      });
-    } catch (e) {
-      if (!mounted) return;
-
-      setState(() {
-        isLoading = false;
-      });
-
-      debugPrint('Error getting popular persons: $e');
-    }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-
-    getPopularPersons();
-  }
+class _HomeViewBody extends StatelessWidget {
+  const _HomeViewBody();
 
   @override
   Widget build(BuildContext context) {
-    List<String> topics = [
-      'Politics',
-      'Sports',
-      'Entertainment',
-      'Business',
-      'Science',
-      'Technology',
-      'Health',
-    ];
-
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
       },
       child: Scaffold(
+        backgroundColor: AppColors.darkBackground,
         appBar: AppBar(
           centerTitle: true,
           title: Text(
             'Celevo',
-            style: Theme.of(
-              context,
-            ).textTheme.displayMedium,
+            style: Theme.of(context).textTheme.displayMedium,
           ),
           leading: IconButton(
-            icon: const Icon(CupertinoIcons.search),
-            onPressed: () {},
+            icon: const Icon(CupertinoIcons.chat_bubble_2),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ChatView(),
+                ),
+              );
+            },
           ),
           actions: [
             IconButton(
-              icon: const Icon(CupertinoIcons.bell),
-              onPressed: () {},
+              icon: const Icon(CupertinoIcons.heart),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const FavoritesView(),
+                  ),
+                );
+              },
             ),
           ],
         ),
         body: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: EdgeInsets.symmetric(horizontal: 16.w),
           child: Column(
             children: [
-              Gap(AppSizes.spacingHeight16),
+              Gap(12.h),
 
-              TextField(
-                decoration: InputDecoration(
-                  labelText: 'Search',
-                  prefixIcon: const Icon(
-                    CupertinoIcons.search,
-                  ),
-                ),
-              ),
+              // Search Bar
+              const HomeSearchBar(),
 
-              Gap(AppSizes.spacingHeight16),
+              Gap(14.h),
 
-              SizedBox(
-                height: 50,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: topics.length,
-                  itemBuilder: (context, index) {
-                    final topic = topics[index];
+              // Department filter
+              const DepartmentFilterList(),
 
-                    final bool isSelected =
-                        selectedTopic == topic;
+              Gap(16.h),
 
-                    return GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          selectedTopic = isSelected
-                              ? null
-                              : topic;
-                        });
-                      },
-                      child: IntrinsicWidth(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius:
-                                BorderRadius.circular(24.0),
-                            border: Border.all(
-                              color: AppColors.darkBorder,
-                            ),
-                            color: isSelected
-                                ? AppColors.primary
-                                : Colors.transparent,
-                          ),
-                          margin:
-                              const EdgeInsets.symmetric(
-                                horizontal: 8.0,
-                              ),
-                          padding:
-                              const EdgeInsets.symmetric(
-                                horizontal: 16.0,
-                                vertical: 8.0,
-                              ),
-                          child: Center(
-                            child: Text(
-                              topic,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyMedium
-                                  ?.copyWith(
-                                    color: isSelected
-                                        ? Colors.white
-                                        : AppColors
-                                              .lightSurface,
-                                  ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-
-              Gap(AppSizes.spacingHeight16),
-
-              PopularPeopleWidget(
-                isLoading: isLoading,
-                popularPersons: popularPersons,
-              ),
+              // Popular Celebrities Grid
+              const PopularPeopleWidget(),
             ],
           ),
         ),
