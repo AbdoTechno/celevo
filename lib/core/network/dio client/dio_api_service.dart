@@ -1,6 +1,5 @@
 import 'package:celevo/core/network/api_service.dart';
 import 'package:celevo/core/network/dio%20client/dio_config.dart';
-import 'package:celevo/core/network/dio%20client/dio_exception.dart';
 import 'package:dio/dio.dart';
 
 class DioApiService implements BaseApiService {
@@ -23,8 +22,8 @@ class DioApiService implements BaseApiService {
         queryParameters: queryParameters, 
       );
       return response; 
-    } on DioException catch (e) {
-      DioExceptionHandler.handle(e);
+    } on DioException {
+      rethrow;
     }
   }
 
@@ -43,8 +42,8 @@ class DioApiService implements BaseApiService {
         queryParameters: queryParameters,
       );
       return response;
-    } on DioException catch (e) {
-      DioExceptionHandler.handle(e);
+    } on DioException {
+      rethrow;
     }
   }
 
@@ -63,8 +62,8 @@ class DioApiService implements BaseApiService {
         queryParameters: queryParameters,
       );
       return response;
-    } on DioException catch (e) {
-      DioExceptionHandler.handle(e);
+    } on DioException {
+      rethrow;
     }
   }
 
@@ -81,8 +80,8 @@ class DioApiService implements BaseApiService {
         queryParameters: queryParameters,
       );
       return response;
-    } on DioException catch (e) {
-      DioExceptionHandler.handle(e);
+    } on DioException {
+      rethrow;
     }
   }
 }

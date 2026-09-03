@@ -11,11 +11,8 @@ class DepartmentFilterList extends StatelessWidget {
   static const List<String> _departments = [
     'Acting',
     'Directing',
-    'Production',
     'Writing',
-    'Sound',
-    'Camera',
-    'Editing',
+    'Production',
   ];
 
   @override
@@ -25,7 +22,7 @@ class DepartmentFilterList extends StatelessWidget {
         final selectedDep = (state is PopularPersonsSuccess) ? state.selectedDepartment : null;
 
         return SizedBox(
-          height: 38.h,
+          height: 36.h,
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
             physics: const BouncingScrollPhysics(),
@@ -34,67 +31,61 @@ class DepartmentFilterList extends StatelessWidget {
             itemBuilder: (context, index) {
               if (index == 0) {
                 final isAll = selectedDep == null;
-                return GestureDetector(
+                return _buildChip(
+                  label: 'All',
+                  isSelected: isAll,
                   onTap: () {
                     context.read<PopularPersonsCubit>().filterByDepartment(null);
                   },
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 200),
-                    padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-                    decoration: BoxDecoration(
-                      color: isAll ? AppColors.primary : AppColors.darkSurface,
-                      borderRadius: BorderRadius.circular(20.r),
-                      border: Border.all(
-                        color: isAll ? AppColors.primary : AppColors.darkBorder,
-                      ),
-                    ),
-                    child: Center(
-                      child: Text(
-                        'All',
-                        style: TextStyle(
-                          color: isAll ? Colors.black : Colors.white,
-                          fontSize: 12.sp,
-                          fontWeight: isAll ? FontWeight.bold : FontWeight.w500,
-                        ),
-                      ),
-                    ),
-                  ),
                 );
               }
 
               final dep = _departments[index - 1];
               final isSelected = selectedDep?.toLowerCase() == dep.toLowerCase();
 
-              return GestureDetector(
+              return _buildChip(
+                label: dep,
+                isSelected: isSelected,
                 onTap: () {
                   context.read<PopularPersonsCubit>().filterByDepartment(dep);
                 },
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 200),
-                  padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-                  decoration: BoxDecoration(
-                    color: isSelected ? AppColors.primary : AppColors.darkSurface,
-                    borderRadius: BorderRadius.circular(20.r),
-                    border: Border.all(
-                      color: isSelected ? AppColors.primary : AppColors.darkBorder,
-                    ),
-                  ),
-                  child: Center(
-                    child: Text(
-                      dep,
-                      style: TextStyle(
-                        color: isSelected ? Colors.black : Colors.white,
-                        fontSize: 12.sp,
-                        fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-                      ),
-                    ),
-                  ),
-                ),
               );
             },
           ),
         );
       },
+    );
+  }
+
+  Widget _buildChip({
+    required String label,
+    required bool isSelected,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 180),
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 7.h),
+        decoration: BoxDecoration(
+          color: isSelected ? AppColors.primary : AppColors.darkSurface,
+          borderRadius: BorderRadius.circular(18.r),
+          border: Border.all(
+            color: isSelected ? AppColors.primary : AppColors.darkBorder,
+            width: 1,
+          ),
+        ),
+        child: Center(
+          child: Text(
+            label,
+            style: TextStyle(
+              color: isSelected ? Colors.black : Colors.white,
+              fontSize: 12.5.sp,
+              fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

@@ -4,13 +4,19 @@ import 'package:celevo/core/repos/favorites_repo.dart';
 import 'package:celevo/core/theme/dark_theme.dart';
 import 'package:celevo/features/chat/cubit/chat_cubit.dart';
 import 'package:celevo/features/favorites/cubit/favorites_cubit.dart';
-import 'package:celevo/features/home/view/home_view.dart';
+import 'package:celevo/features/home/view/main_nav_scaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  try {
+    await dotenv.load(fileName: ".env");
+  } catch (_) {
+    // If .env file is missing (e.g. CI/CD), fallback to default/empty
+  }
   await setUpLocator();
   runApp(const MyApp());
 }
@@ -38,7 +44,7 @@ class MyApp extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             title: 'Celevo',
             theme: darkTheme,
-            home: const HomeView(),
+            home: const MainNavScaffold(),
           ),
         );
       },

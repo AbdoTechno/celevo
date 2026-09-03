@@ -1,8 +1,6 @@
 import 'package:celevo/core/di/injection_container.dart';
 import 'package:celevo/core/repos/popular_person_repo.dart';
 import 'package:celevo/core/theme/app_colors.dart';
-import 'package:celevo/features/chat/view/chat_view.dart';
-import 'package:celevo/features/favorites/view/favorites_view.dart';
 import 'package:celevo/features/home/cubit/popular_persons_cubit.dart';
 import 'package:celevo/features/home/widgets/department_filter_list.dart';
 import 'package:celevo/features/home/widgets/home_search_bar.dart';
@@ -39,50 +37,44 @@ class _HomeViewBody extends StatelessWidget {
         backgroundColor: AppColors.darkBackground,
         appBar: AppBar(
           centerTitle: true,
+          elevation: 0,
+          scrolledUnderElevation: 0,
           title: Text(
             'Celevo',
             style: Theme.of(context).textTheme.displayMedium,
           ),
-          leading: IconButton(
-            icon: const Icon(CupertinoIcons.chat_bubble_2),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const ChatView(),
-                ),
-              );
-            },
-          ),
           actions: [
-            IconButton(
-              icon: const Icon(CupertinoIcons.heart),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const FavoritesView(),
-                  ),
-                );
-              },
+            Builder(
+              builder: (ctx) => IconButton(
+                icon: Icon(
+                  CupertinoIcons.arrow_clockwise,
+                  color: AppColors.textSecondaryDark,
+                  size: 20.sp,
+                ),
+                tooltip: 'Refresh',
+                onPressed: () {
+                  ctx.read<PopularPersonsCubit>().getPopularPersons(page: 1);
+                },
+              ),
             ),
+            SizedBox(width: 8.w),
           ],
         ),
         body: Padding(
           padding: EdgeInsets.symmetric(horizontal: 16.w),
           child: Column(
             children: [
-              Gap(12.h),
+              Gap(8.h),
 
               // Search Bar
               const HomeSearchBar(),
 
-              Gap(14.h),
+              Gap(12.h),
 
               // Department filter
               const DepartmentFilterList(),
 
-              Gap(16.h),
+              Gap(14.h),
 
               // Popular Celebrities Grid
               const PopularPeopleWidget(),

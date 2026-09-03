@@ -18,7 +18,7 @@ class PersonKnownForList extends StatelessWidget {
     if (knownFor.isEmpty) return const SizedBox.shrink();
 
     return SizedBox(
-      height: 230.h,
+      height: 235.h,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         physics: const BouncingScrollPhysics(),
@@ -26,63 +26,66 @@ class PersonKnownForList extends StatelessWidget {
         separatorBuilder: (_, _) => SizedBox(width: 14.w),
         itemBuilder: (context, index) {
           final known = knownFor[index];
-          final String title = known.title ?? known.name ?? 'Unknown';
+          final String title = known.title ?? known.name ?? 'Unknown Title';
           final String? poster = known.posterPath;
+          final year = _extractYear(known.releaseDate ?? known.firstAirDate);
 
           return SizedBox(
-            width: 145.w,
+            width: 135.w,
             child: Container(
               decoration: BoxDecoration(
                 color: AppColors.darkSurface,
-                borderRadius: BorderRadius.circular(18.r),
-                border: Border.all(color: AppColors.darkBorder),
+                borderRadius: BorderRadius.circular(16.r),
+                border: Border.all(
+                  color: AppColors.darkBorder,
+                  width: 1,
+                ),
               ),
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(18.r),
+                borderRadius: BorderRadius.circular(16.r),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Expanded(
-                      child: Stack(
-                        fit: StackFit.expand,
+                      child: poster != null
+                          ? CachedNetworkImage(
+                              imageUrl: 'https://image.tmdb.org/t/p/w342$poster',
+                              fit: BoxFit.cover,
+                              width: double.infinity,
+                              placeholder: (context, url) => _buildPosterPlaceholder(),
+                              errorWidget: (context, url, error) => _buildPosterPlaceholder(),
+                            )
+                          : _buildPosterPlaceholder(),
+                    ),
+
+                    // Title & Year info
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(10.w, 8.h, 10.w, 10.h),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          poster != null
-                              ? CachedNetworkImage(
-                                  imageUrl: 'https://image.tmdb.org/t/p/w300$poster',
-                                  fit: BoxFit.cover,
-                                  placeholder: (context, url) => _buildPosterPlaceholder(),
-                                  errorWidget: (context, url, error) => _buildPosterPlaceholder(),
-                                )
-                              : _buildPosterPlaceholder(),
-                          Positioned.fill(
-                            child: DecoratedBox(
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter,
-                                  colors: [
-                                    Colors.transparent,
-                                    Colors.black.withValues(alpha: 0.55),
-                                  ],
-                                ),
-                              ),
+                          Text(
+                            title,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 12.5.sp,
+                              fontWeight: FontWeight.w600,
                             ),
                           ),
+                          if (year.isNotEmpty) ...[
+                            SizedBox(height: 2.h),
+                            Text(
+                              year,
+                              style: TextStyle(
+                                color: AppColors.textMutedDark,
+                                fontSize: 11.sp,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
                         ],
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.fromLTRB(12.w, 10.h, 12.w, 12.h),
-                      child: Text(
-                        title,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          color: AppColors.textPrimaryDark,
-                          fontSize: 12.sp,
-                          height: 1.25,
-                          fontWeight: FontWeight.w600,
-                        ),
                       ),
                     ),
                   ],
@@ -106,5 +109,14 @@ class PersonKnownForList extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  String _extractYear(String? date) {
+    if (date == null || date.isEmpty) return '';
+    try {
+      return date.split('-').first;
+    } catch (_) {
+      return '';
+    }
   }
 }

@@ -10,7 +10,7 @@ class PopularPersonRepo {
   PopularPersonRepo({required this.apiService});
 
   Future<PopularPersonModel> getPopularPersons({
-    int page = 1,
+    int page = 2,
   }) async {
     try {
       final response = await apiService.get(

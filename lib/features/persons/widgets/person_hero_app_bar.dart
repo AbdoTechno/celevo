@@ -22,29 +22,39 @@ class PersonHeroAppBar extends StatelessWidget {
     final String department = personModel.knownForDepartment ?? 'Actor';
 
     return SliverAppBar(
-      expandedHeight: 430.h,
+      expandedHeight: 440.h,
       pinned: true,
       elevation: 0,
       scrolledUnderElevation: 0,
       backgroundColor: AppColors.darkBackground,
-      leading: IconButton(
-        icon: const Icon(CupertinoIcons.chevron_left, color: Colors.white),
-        onPressed: () => Navigator.pop(context),
+      leading: Padding(
+        padding: EdgeInsets.only(left: 14.w),
+        child: Center(
+          child: _buildCircleButton(
+            icon: CupertinoIcons.chevron_left,
+            iconColor: Colors.white,
+            onTap: () => Navigator.pop(context),
+          ),
+        ),
       ),
       actions: [
-        BlocBuilder<FavoritesCubit, FavoritesState>(
-          builder: (context, favState) {
-            final isFav = (favState is FavoritesLoaded) && favState.isFavorite(personModel.id);
-            return IconButton(
-              icon: Icon(
-                isFav ? CupertinoIcons.heart_fill : CupertinoIcons.heart,
-                color: isFav ? AppColors.favorite : Colors.white,
-              ),
-              onPressed: () {
-                context.read<FavoritesCubit>().toggleFavorite(personModel);
+        Padding(
+          padding: EdgeInsets.only(right: 14.w),
+          child: Center(
+            child: BlocBuilder<FavoritesCubit, FavoritesState>(
+              builder: (context, favState) {
+                final isFav = (favState is FavoritesLoaded) && favState.isFavorite(personModel.id);
+                return _buildCircleButton(
+                  icon: isFav ? CupertinoIcons.heart_fill : CupertinoIcons.heart,
+                  iconColor: isFav ? AppColors.favorite : Colors.white,
+                  isFav: isFav,
+                  onTap: () {
+                    context.read<FavoritesCubit>().toggleFavorite(personModel);
+                  },
+                );
               },
-            );
-          },
+            ),
+          ),
         ),
       ],
       flexibleSpace: FlexibleSpaceBar(
@@ -65,7 +75,7 @@ class PersonHeroAppBar extends StatelessWidget {
                   : _buildPlaceholder(),
             ),
 
-            // TOP & BOTTOM GRADIENTS
+            // GRADIENT OVERLAY
             Positioned.fill(
               child: DecoratedBox(
                 decoration: BoxDecoration(
@@ -73,12 +83,12 @@ class PersonHeroAppBar extends StatelessWidget {
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [
-                      Colors.black.withValues(alpha: 0.55),
+                      Colors.black.withValues(alpha: 0.5),
                       Colors.transparent,
-                      AppColors.darkBackground.withValues(alpha: 0.35),
+                      Colors.black.withValues(alpha: 0.3),
                       AppColors.darkBackground,
                     ],
-                    stops: const [0.0, 0.35, 0.68, 1.0],
+                    stops: const [0.0, 0.25, 0.6, 1.0],
                   ),
                 ),
               ),
@@ -88,65 +98,54 @@ class PersonHeroAppBar extends StatelessWidget {
             Positioned(
               left: 20.w,
               right: 20.w,
-              bottom: 24.h,
+              bottom: 20.h,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // Department badge
                   Container(
-                    padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+                    padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
                     decoration: BoxDecoration(
-                      color: AppColors.primary.withValues(alpha: 0.92),
-                      borderRadius: BorderRadius.circular(20.r),
+                      color: AppColors.primary,
+                      borderRadius: BorderRadius.circular(12.r),
                     ),
                     child: Text(
-                      department,
+                      department.toUpperCase(),
                       style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 11.sp,
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: 0.3,
+                        color: Colors.black,
+                        fontSize: 10.5.sp,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 0.6,
                       ),
                     ),
                   ),
+
                   SizedBox(height: 10.h),
+
+                  // Name
                   Text(
                     name,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 28.sp,
-                      height: 1.1,
+                      fontSize: 26.sp,
+                      height: 1.15,
                       fontWeight: FontWeight.w800,
-                      letterSpacing: -0.5,
-                      shadows: [
-                        Shadow(
-                          color: Colors.black.withValues(alpha: 0.8),
-                          blurRadius: 12,
-                        ),
-                      ],
                     ),
                   ),
-                  SizedBox(height: 8.h),
-                  if (personModel.popularity != null)
-                    Row(
-                      children: [
-                        Icon(
-                          CupertinoIcons.chart_bar_alt_fill,
-                          color: AppColors.primary,
-                          size: 14.sp,
-                        ),
-                        SizedBox(width: 6.w),
-                        Text(
-                          '${personModel.popularity!.toStringAsFixed(1)} popularity',
-                          style: TextStyle(
-                            color: Colors.white.withValues(alpha: 0.8),
-                            fontSize: 12.sp,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
+
+                  if (personModel.popularity != null) ...[
+                    SizedBox(height: 6.h),
+                    Text(
+                      '${personModel.popularity!.toStringAsFixed(1)} popularity',
+                      style: TextStyle(
+                        color: AppColors.textSecondaryDark,
+                        fontSize: 12.sp,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
+                  ],
                 ],
               ),
             ),
@@ -156,22 +155,47 @@ class PersonHeroAppBar extends StatelessWidget {
     );
   }
 
+  Widget _buildCircleButton({
+    required IconData icon,
+    required Color iconColor,
+    required VoidCallback onTap,
+    bool isFav = false,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      behavior: HitTestBehavior.opaque,
+      child: Container(
+        width: 38.w,
+        height: 38.w,
+        decoration: BoxDecoration(
+          color: Colors.black.withValues(alpha: 0.5),
+          shape: BoxShape.circle,
+          border: Border.all(
+            color: isFav
+                ? AppColors.favorite
+                : Colors.white.withValues(alpha: 0.25),
+            width: 1,
+          ),
+        ),
+        child: Center(
+          child: Icon(
+            icon,
+            size: 18.sp,
+            color: iconColor,
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget _buildPlaceholder() {
     return Container(
       color: AppColors.darkSurface,
       child: Center(
-        child: Container(
-          width: 90.w,
-          height: 90.w,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: AppColors.primary.withValues(alpha: 0.10),
-          ),
-          child: Icon(
-            CupertinoIcons.person,
-            size: 42.sp,
-            color: AppColors.textMutedDark,
-          ),
+        child: Icon(
+          CupertinoIcons.person,
+          size: 48.sp,
+          color: AppColors.textMutedDark,
         ),
       ),
     );

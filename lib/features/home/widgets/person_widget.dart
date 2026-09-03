@@ -6,6 +6,7 @@ import 'package:celevo/features/favorites/cubit/favorites_state.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class PersonWidget extends StatelessWidget {
   const PersonWidget({super.key, required this.person});
@@ -15,7 +16,7 @@ class PersonWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-      borderRadius: BorderRadius.circular(22),
+      borderRadius: BorderRadius.circular(20.r),
       child: Stack(
         fit: StackFit.expand,
         children: [
@@ -26,10 +27,14 @@ class PersonWidget extends StatelessWidget {
                   fit: BoxFit.cover,
                   placeholder: (context, url) => Container(
                     color: AppColors.darkSurface,
-                    child: const Center(
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: AppColors.primary,
+                    child: Center(
+                      child: SizedBox(
+                        width: 22.w,
+                        height: 22.w,
+                        child: const CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: AppColors.primary,
+                        ),
                       ),
                     ),
                   ),
@@ -39,7 +44,7 @@ class PersonWidget extends StatelessWidget {
                 )
               : _buildPlaceholder(),
 
-          /// Dark bottom gradient
+          /// Gradient for text contrast
           Positioned.fill(
             child: DecoratedBox(
               decoration: BoxDecoration(
@@ -48,57 +53,28 @@ class PersonWidget extends StatelessWidget {
                   end: Alignment.bottomCenter,
                   colors: [
                     Colors.transparent,
-                    Colors.black.withValues(alpha: 0.1),
-                    Colors.black.withValues(alpha: 0.45),
-                    Colors.black.withValues(alpha: 0.92),
+                    Colors.black.withValues(alpha: 0.25),
+                    Colors.black.withValues(alpha: 0.9),
                   ],
-                  stops: const [0.0, 0.4, 0.7, 1.0],
+                  stops: const [0.4, 0.7, 1.0],
                 ),
               ),
             ),
           ),
 
-          /// Favorite button (Red if in favorites, White/Gray border if not)
+          /// Favorite button
           Positioned(
-            top: 10,
-            right: 10,
+            top: 10.h,
+            right: 10.w,
             child: BlocBuilder<FavoritesCubit, FavoritesState>(
               builder: (context, state) {
                 final isFav = (state is FavoritesLoaded) && state.isFavorite(person.id);
 
-                return Container(
-                  width: 38,
-                  height: 38,
-                  decoration: BoxDecoration(
-                    color: isFav
-                        ? AppColors.favorite.withValues(alpha: 0.25)
-                        : Colors.black.withValues(alpha: 0.45),
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: isFav
-                          ? AppColors.favorite
-                          : Colors.white.withValues(alpha: 0.25),
-                      width: 1.2,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.3),
-                        blurRadius: 8,
-                        offset: const Offset(0, 3),
-                      ),
-                    ],
-                  ),
-                  child: IconButton(
-                    padding: EdgeInsets.zero,
-                    icon: Icon(
-                      isFav ? CupertinoIcons.heart_fill : CupertinoIcons.heart,
-                      size: 18,
-                      color: isFav ? AppColors.favorite : Colors.white,
-                    ),
-                    onPressed: () {
-                      context.read<FavoritesCubit>().toggleFavorite(person);
-                    },
-                  ),
+                return _FavoriteIconButton(
+                  isFav: isFav,
+                  onTap: () {
+                    context.read<FavoritesCubit>().toggleFavorite(person);
+                  },
                 );
               },
             ),
@@ -106,53 +82,33 @@ class PersonWidget extends StatelessWidget {
 
           /// Person information
           Positioned(
-            left: 12,
-            right: 12,
-            bottom: 12,
+            left: 12.w,
+            right: 12.w,
+            bottom: 12.h,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
                   person.name ?? 'Unknown',
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: 0.1,
-                      ),
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 14.sp,
+                  ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(height: 4),
-                Row(
-                  children: [
-                    Container(
-                      width: 6,
-                      height: 6,
-                      decoration: BoxDecoration(
-                        color: AppColors.primary,
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                            color: AppColors.primary.withValues(alpha: 0.6),
-                            blurRadius: 6,
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(width: 6),
-                    Expanded(
-                      child: Text(
-                        person.knownForDepartment ?? 'Actor',
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: Colors.white.withValues(alpha: 0.75),
-                              fontWeight: FontWeight.w500,
-                            ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  ],
+                SizedBox(height: 2.h),
+                Text(
+                  person.knownForDepartment ?? 'Celebrity',
+                  style: TextStyle(
+                    color: AppColors.textSecondaryDark,
+                    fontSize: 11.5.sp,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ],
             ),
@@ -165,11 +121,50 @@ class PersonWidget extends StatelessWidget {
   Widget _buildPlaceholder() {
     return Container(
       color: AppColors.darkSurface,
-      child: const Center(
+      child: Center(
         child: Icon(
           CupertinoIcons.person_fill,
-          size: 48,
+          size: 36.sp,
           color: AppColors.textMutedDark,
+        ),
+      ),
+    );
+  }
+}
+
+class _FavoriteIconButton extends StatelessWidget {
+  final bool isFav;
+  final VoidCallback onTap;
+
+  const _FavoriteIconButton({
+    required this.isFav,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      behavior: HitTestBehavior.opaque,
+      child: Container(
+        width: 36.w,
+        height: 36.w,
+        decoration: BoxDecoration(
+          color: Colors.black.withValues(alpha: 0.5),
+          shape: BoxShape.circle,
+          border: Border.all(
+            color: isFav
+                ? AppColors.favorite
+                : Colors.white.withValues(alpha: 0.3),
+            width: 1,
+          ),
+        ),
+        child: Center(
+          child: Icon(
+            isFav ? CupertinoIcons.heart_fill : CupertinoIcons.heart,
+            size: 18.sp,
+            color: isFav ? AppColors.favorite : Colors.white,
+          ),
         ),
       ),
     );

@@ -20,17 +20,16 @@ class SectionHeaderWidget extends StatelessWidget {
       children: [
         Icon(
           icon,
-          size: 20.sp,
+          size: 18.sp,
           color: AppColors.primary,
         ),
         SizedBox(width: 8.w),
         Text(
           title,
           style: TextStyle(
-            color: AppColors.textPrimaryDark,
-            fontSize: 18.sp,
+            color: Colors.white,
+            fontSize: 16.sp,
             fontWeight: FontWeight.w700,
-            letterSpacing: -0.2,
           ),
         ),
         if (trailing != null) ...[

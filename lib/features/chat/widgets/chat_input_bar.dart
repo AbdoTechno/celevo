@@ -4,6 +4,7 @@ import 'package:celevo/features/chat/cubit/chat_state.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ChatInputBar extends StatelessWidget {
   final TextEditingController controller;
@@ -20,90 +21,106 @@ class ChatInputBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-      decoration: const BoxDecoration(
+      padding: EdgeInsets.fromLTRB(14.w, 10.h, 14.w, 10.h),
+      decoration: BoxDecoration(
         color: AppColors.darkSurface,
         border: Border(
-          top: BorderSide(color: AppColors.darkBorder, width: 0.8),
+          top: BorderSide(
+            color: AppColors.darkBorder.withValues(alpha: 0.8),
+            width: 0.8,
+          ),
         ),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          // Text Field
+          // Text Field Container
           Expanded(
             child: Container(
-              constraints: const BoxConstraints(
-                minHeight: 44,
-                maxHeight: 120,
+              constraints: BoxConstraints(
+                minHeight: 44.h,
+                maxHeight: 110.h,
               ),
-              padding: const EdgeInsets.symmetric(horizontal: 14.0),
+              padding: EdgeInsets.symmetric(horizontal: 16.w),
               decoration: BoxDecoration(
                 color: AppColors.darkCard,
-                borderRadius: BorderRadius.circular(22),
-                border: Border.all(color: AppColors.darkBorder),
+                borderRadius: BorderRadius.circular(22.r),
+                border: Border.all(
+                  color: hasText
+                      ? AppColors.primary.withValues(alpha: 0.5)
+                      : AppColors.darkBorder,
+                  width: 1,
+                ),
               ),
               child: TextField(
                 controller: controller,
                 minLines: 1,
                 maxLines: 4,
                 textCapitalization: TextCapitalization.sentences,
-                style: const TextStyle(
+                style: TextStyle(
                   color: Colors.white,
-                  fontSize: 14.5,
+                  fontSize: 14.sp,
                 ),
-                decoration: const InputDecoration(
-                  hintText: 'Type your message...',
+                decoration: InputDecoration(
+                  hintText: 'Ask about actors, movies, directors...',
                   hintStyle: TextStyle(
                     color: AppColors.textMutedDark,
-                    fontSize: 14.0,
+                    fontSize: 13.sp,
                   ),
                   border: InputBorder.none,
                   isDense: true,
-                  contentPadding: EdgeInsets.symmetric(vertical: 12.0),
+                  contentPadding: EdgeInsets.symmetric(vertical: 12.h),
                 ),
               ),
             ),
           ),
 
-          const SizedBox(width: 8.0),
+          SizedBox(width: 10.w),
 
           // Send Button
           BlocBuilder<ChatCubit, ChatState>(
             builder: (context, state) {
               final isGenerating = (state is ChatUpdated) && state.isGenerating;
+              final canSend = hasText && !isGenerating;
 
-              return Container(
-                width: 44,
-                height: 44,
+              return AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                width: 44.w,
+                height: 44.w,
                 decoration: BoxDecoration(
-                  color: (hasText && !isGenerating)
-                      ? AppColors.primary
-                      : AppColors.darkCard,
+                  color: canSend ? AppColors.primary : AppColors.darkCard,
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: (hasText && !isGenerating)
-                        ? AppColors.primary
-                        : AppColors.darkBorder,
+                    color: canSend ? AppColors.primary : AppColors.darkBorder,
+                    width: 1,
                   ),
+                  boxShadow: canSend
+                      ? [
+                          BoxShadow(
+                            color: AppColors.primary.withValues(alpha: 0.35),
+                            blurRadius: 10,
+                            offset: const Offset(0, 3),
+                          ),
+                        ]
+                      : null,
                 ),
                 child: IconButton(
                   padding: EdgeInsets.zero,
                   icon: isGenerating
-                      ? const SizedBox(
-                          width: 18,
-                          height: 18,
-                          child: CircularProgressIndicator(
+                      ? SizedBox(
+                          width: 18.w,
+                          height: 18.w,
+                          child: const CircularProgressIndicator(
                             strokeWidth: 2,
                             color: AppColors.primary,
                           ),
                         )
                       : Icon(
                           CupertinoIcons.arrow_up,
-                          size: 20,
-                          color: hasText ? Colors.black : AppColors.textMutedDark,
+                          size: 19.sp,
+                          color: canSend ? Colors.black : AppColors.textMutedDark,
                         ),
-                  onPressed: (hasText && !isGenerating) ? onSendMessage : null,
+                  onPressed: canSend ? onSendMessage : null,
                 ),
               );
             },

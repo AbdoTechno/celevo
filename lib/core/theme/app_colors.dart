@@ -41,6 +41,10 @@ class AppColors {
   static const Color aiMessageDark = Color(0xFF1B1B1B);
   static const Color aiMessageLight = Color(0xFFF0EEE8);
 
-  // Overlay
+  // Overlay & Glass
   static const Color overlay = Color(0xB3000000);
+  static const Color glassBackground = Color(0xCC141416);
+  static const Color glassBorder = Color(0x22FFFFFF);
+  static const Color goldAccent = Color(0xFFE5C378);
+  static const Color chipBackground = Color(0xFF1E1E22);
 }

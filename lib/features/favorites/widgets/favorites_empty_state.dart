@@ -1,4 +1,5 @@
 import 'package:celevo/core/theme/app_colors.dart';
+import 'package:celevo/features/home/view/main_nav_scaffold.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -14,36 +15,55 @@ class FavoritesEmptyState extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Container(
-              width: 90.w,
-              height: 90.w,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: AppColors.favorite.withValues(alpha: 0.12),
-              ),
-              child: Icon(
-                CupertinoIcons.heart_slash,
-                size: 44.sp,
-                color: AppColors.favorite,
-              ),
+            Icon(
+              CupertinoIcons.heart,
+              size: 48.sp,
+              color: AppColors.textMutedDark,
             ),
-            SizedBox(height: 20.h),
+            SizedBox(height: 18.h),
             Text(
-              'No Favorites Yet',
+              'No Saved Celebrities',
               style: TextStyle(
                 color: Colors.white,
-                fontSize: 20.sp,
+                fontSize: 18.sp,
                 fontWeight: FontWeight.w700,
               ),
             ),
             SizedBox(height: 8.h),
             Text(
-              'Tap the heart icon on any celebrity card to save them to your favorites list.',
+              'Save your favorite actors, directors, and creators to quickly access their profiles anytime.',
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: AppColors.textSecondaryDark,
-                fontSize: 14.sp,
+                fontSize: 13.5.sp,
                 height: 1.5,
+              ),
+            ),
+            SizedBox(height: 22.h),
+            ElevatedButton.icon(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primary,
+                foregroundColor: Colors.black,
+                elevation: 0,
+                padding: EdgeInsets.symmetric(horizontal: 22.w, vertical: 12.h),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14.r),
+                ),
+              ),
+              onPressed: () {
+                if (Navigator.canPop(context)) {
+                  Navigator.pop(context);
+                } else {
+                  MainNavScaffold.switchTab(context, 0);
+                }
+              },
+              icon: Icon(CupertinoIcons.film, size: 16.sp, color: Colors.black),
+              label: Text(
+                'Explore Celebrities',
+                style: TextStyle(
+                  fontSize: 13.5.sp,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
             ),
           ],

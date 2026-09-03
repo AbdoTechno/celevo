@@ -17,12 +17,10 @@ class PopularPersonsCubit extends Cubit<PopularPersonsState> {
         emit(current.copyWith(isLoadingMore: true));
       }
     }
-
     try {
       final response = await _repo.getPopularPersons(page: page);
       final newResults = response.results ?? [];
       final totalPages = response.totalPages ?? 1;
-
       if (page == 1) {
         emit(
           PopularPersonsSuccess(
@@ -72,10 +70,7 @@ class PopularPersonsCubit extends Cubit<PopularPersonsState> {
       query,
     );
 
-    emit(current.copyWith(
-      filteredPersons: filtered,
-      searchQuery: query,
-    ));
+    emit(current.copyWith(filteredPersons: filtered, searchQuery: query));
   }
 
   void filterByDepartment(String? department) {
@@ -88,11 +83,13 @@ class PopularPersonsCubit extends Cubit<PopularPersonsState> {
       current.searchQuery,
     );
 
-    emit(current.copyWith(
-      filteredPersons: filtered,
-      selectedDepartment: newDep,
-      clearDepartment: newDep == null,
-    ));
+    emit(
+      current.copyWith(
+        filteredPersons: filtered,
+        selectedDepartment: newDep,
+        clearDepartment: newDep == null,
+      ),
+    );
   }
 
   List<PersonModel> _applyFilterAndSearch(
@@ -101,13 +98,17 @@ class PopularPersonsCubit extends Cubit<PopularPersonsState> {
     String query,
   ) {
     return list.where((person) {
-      final matchesDepartment = department == null ||
+      final matchesDepartment =
+          department == null ||
           department.isEmpty ||
           (person.knownForDepartment != null &&
-              person.knownForDepartment!.toLowerCase() == department.toLowerCase());
+              person.knownForDepartment!.toLowerCase() ==
+                  department.toLowerCase());
 
-      final matchesQuery = query.isEmpty ||
-          (person.name != null && person.name!.toLowerCase().contains(query.toLowerCase()));
+      final matchesQuery =
+          query.isEmpty ||
+          (person.name != null &&
+              person.name!.toLowerCase().contains(query.toLowerCase()));
 
       return matchesDepartment && matchesQuery;
     }).toList();
@@ -116,7 +117,9 @@ class PopularPersonsCubit extends Cubit<PopularPersonsState> {
   void loadNextPage() {
     if (state is! PopularPersonsSuccess) return;
     final current = state as PopularPersonsSuccess;
-    if (current.isLoadingMore || current.currentPage >= current.totalPages) return;
+    if (current.isLoadingMore || current.currentPage >= current.totalPages) {
+      return;
+    }
     getPopularPersons(page: current.currentPage + 1);
   }
 }

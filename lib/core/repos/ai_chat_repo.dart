@@ -16,24 +16,22 @@ class AiChatRepo {
     }
 
     try {
-      final response = await apiService.post(
-        ApiConstants.geminiChatUrl(apiKey),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: {
-          'contents': [
-            {
-              'parts': [
-                {'text': message},
-              ],
-            },
-          ],
-        },
-      );
+      dynamic response = await _callGemini(apiKey, model: 'gemini-3.6-flash', message: message);
 
-      final dynamic data = response.data;
+      var data = response?.data;
+      if (data is Map<String, dynamic> && data['error'] != null) {
+        // Try fallback to gemini-3.5-flash-lite
+        response = await _callGemini(apiKey, model: 'gemini-3.5-flash-lite', message: message);
+        data = response?.data;
+      }
+
       if (data is Map<String, dynamic>) {
+        if (data['error'] != null) {
+          final err = data['error'];
+          final msg = err is Map ? err['message'] : err.toString();
+          throw Exception(msg);
+        }
+
         final candidates = data['candidates'] as List?;
         if (candidates != null && candidates.isNotEmpty) {
           final content = candidates[0]['content'];
@@ -51,5 +49,23 @@ class AiChatRepo {
     } catch (e) {
       throw Exception('Failed to get response: $e');
     }
+  }
+
+  Future<dynamic> _callGemini(String apiKey, {required String model, required String message}) {
+    return apiService.post(
+      ApiConstants.geminiChatUrl(apiKey, model: model),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: {
+        'contents': [
+          {
+            'parts': [
+              {'text': message},
+            ],
+          },
+        ],
+      },
+    );
   }
 }

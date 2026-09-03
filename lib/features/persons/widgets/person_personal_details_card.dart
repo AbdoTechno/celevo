@@ -22,25 +22,34 @@ class PersonPersonalDetailsCard extends StatelessWidget {
       padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
         color: AppColors.darkSurface,
-        borderRadius: BorderRadius.circular(18.r),
-        border: Border.all(color: AppColors.darkBorder.withValues(alpha: 0.7)),
+        borderRadius: BorderRadius.circular(16.r),
+        border: Border.all(
+          color: AppColors.darkBorder,
+          width: 1,
+        ),
       ),
       child: Column(
         children: [
           if (details.birthday != null)
             _buildDetailRow(
               icon: CupertinoIcons.calendar,
-              label: 'Birthday',
+              label: 'Born',
               value: details.deathday != null
-                  ? '${details.birthday} - ${details.deathday}'
-                  : '${details.birthday} (${_calculateAge(details.birthday)} years old)',
+                  ? '${details.birthday}  •  Died: ${details.deathday}'
+                  : '${details.birthday}  (${_calculateAge(details.birthday)} years old)',
             ),
           if (details.birthday != null && details.placeOfBirth != null)
-            Divider(height: 16.h, color: AppColors.darkBorder.withValues(alpha: 0.5)),
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 12.h),
+              child: Divider(
+                height: 1,
+                color: AppColors.darkBorder.withValues(alpha: 0.6),
+              ),
+            ),
           if (details.placeOfBirth != null)
             _buildDetailRow(
-              icon: CupertinoIcons.location_solid,
-              label: 'Place of Birth',
+              icon: CupertinoIcons.placemark_fill,
+              label: 'Origin',
               value: details.placeOfBirth!,
             ),
         ],
@@ -56,25 +65,30 @@ class PersonPersonalDetailsCard extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(icon, size: 16.sp, color: AppColors.primary),
-        SizedBox(width: 10.w),
-        Text(
-          '$label: ',
-          style: TextStyle(
-            color: AppColors.textMutedDark,
-            fontSize: 13.sp,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        Expanded(
-          child: Text(
-            value,
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 13.sp,
-              fontWeight: FontWeight.w600,
+        Icon(icon, size: 18.sp, color: AppColors.primary),
+        SizedBox(width: 12.w),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              label.toUpperCase(),
+              style: TextStyle(
+                color: AppColors.textMutedDark,
+                fontSize: 10.sp,
+                fontWeight: FontWeight.w600,
+                letterSpacing: 0.5,
+              ),
             ),
-          ),
+            SizedBox(height: 2.h),
+            Text(
+              value,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 13.5.sp,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
         ),
       ],
     );

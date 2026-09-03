@@ -1,3 +1,4 @@
+import 'package:celevo/core/models/popular_person_model.dart';
 import 'package:celevo/core/theme/app_colors.dart';
 import 'package:celevo/features/home/cubit/popular_persons_cubit.dart';
 import 'package:celevo/features/home/cubit/popular_persons_state.dart';
@@ -128,7 +129,7 @@ class _PopularPeopleWidgetState extends State<PopularPeopleWidget> {
               child: GridView.builder(
                 controller: _scrollController,
                 physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
-                padding: EdgeInsets.only(bottom: 20.h),
+                padding: EdgeInsets.only(bottom: 16.h),
                 itemCount: persons.length + (state.isLoadingMore ? 1 : 0),
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
@@ -148,30 +149,7 @@ class _PopularPeopleWidgetState extends State<PopularPeopleWidget> {
 
                   final person = persons[index];
 
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => PersonView(personModel: person),
-                        ),
-                      );
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: AppColors.darkSurface,
-                        borderRadius: BorderRadius.circular(22.r),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.35),
-                            blurRadius: 14,
-                            offset: const Offset(0, 6),
-                          ),
-                        ],
-                      ),
-                      child: PersonWidget(person: person),
-                    ),
-                  );
+                  return _TactilePersonCard(person: person);
                 },
               ),
             );
@@ -179,6 +157,54 @@ class _PopularPeopleWidgetState extends State<PopularPeopleWidget> {
 
           return const SizedBox.shrink();
         },
+      ),
+    );
+  }
+}
+
+class _TactilePersonCard extends StatefulWidget {
+  final PersonModel person;
+  const _TactilePersonCard({required this.person});
+
+  @override
+  State<_TactilePersonCard> createState() => _TactilePersonCardState();
+}
+
+class _TactilePersonCardState extends State<_TactilePersonCard> {
+  bool _isPressed = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTapDown: (_) => setState(() => _isPressed = true),
+      onTapUp: (_) => setState(() => _isPressed = false),
+      onTapCancel: () => setState(() => _isPressed = false),
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => PersonView(personModel: widget.person),
+          ),
+        );
+      },
+      child: AnimatedScale(
+        scale: _isPressed ? 0.96 : 1.0,
+        duration: const Duration(milliseconds: 140),
+        curve: Curves.easeInOut,
+        child: Container(
+          decoration: BoxDecoration(
+            color: AppColors.darkSurface,
+            borderRadius: BorderRadius.circular(22.r),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.35),
+                blurRadius: 14,
+                offset: const Offset(0, 6),
+              ),
+            ],
+          ),
+          child: PersonWidget(person: widget.person),
+        ),
       ),
     );
   }

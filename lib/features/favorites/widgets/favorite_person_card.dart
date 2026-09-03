@@ -32,15 +32,9 @@ class FavoritePersonCard extends StatelessWidget {
           color: AppColors.darkSurface,
           borderRadius: BorderRadius.circular(20.r),
           border: Border.all(
-            color: AppColors.darkBorder.withValues(alpha: 0.7),
+            color: AppColors.darkBorder,
+            width: 1,
           ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.35),
-              blurRadius: 14,
-              offset: const Offset(0, 6),
-            ),
-          ],
         ),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(20.r),
@@ -54,8 +48,12 @@ class FavoritePersonCard extends StatelessWidget {
                   fit: BoxFit.cover,
                   placeholder: (context, url) => Container(
                     color: AppColors.darkSurface,
-                    child: const Center(
-                      child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.primary),
+                    child: Center(
+                      child: SizedBox(
+                        width: 20.w,
+                        height: 20.w,
+                        child: const CircularProgressIndicator(strokeWidth: 2, color: AppColors.primary),
+                      ),
                     ),
                   ),
                   errorWidget: (context, url, error) => Container(
@@ -78,10 +76,10 @@ class FavoritePersonCard extends StatelessWidget {
                       end: Alignment.bottomCenter,
                       colors: [
                         Colors.transparent,
-                        Colors.black.withValues(alpha: 0.2),
+                        Colors.black.withValues(alpha: 0.25),
                         Colors.black.withValues(alpha: 0.9),
                       ],
-                      stops: const [0.0, 0.45, 1.0],
+                      stops: const [0.4, 0.7, 1.0],
                     ),
                   ),
                 ),
@@ -98,15 +96,16 @@ class FavoritePersonCard extends StatelessWidget {
                     color: Colors.black.withValues(alpha: 0.5),
                     shape: BoxShape.circle,
                     border: Border.all(
-                      color: AppColors.favorite.withValues(alpha: 0.5),
+                      color: AppColors.favorite,
+                      width: 1,
                     ),
                   ),
                   child: IconButton(
                     padding: EdgeInsets.zero,
-                    icon: const Icon(
+                    icon: Icon(
                       CupertinoIcons.heart_fill,
                       color: AppColors.favorite,
-                      size: 18,
+                      size: 18.sp,
                     ),
                     onPressed: () {
                       if (person.id != null) {
@@ -148,31 +147,16 @@ class FavoritePersonCard extends StatelessWidget {
                         fontWeight: FontWeight.w700,
                       ),
                     ),
-                    SizedBox(height: 4.h),
-                    Row(
-                      children: [
-                        Container(
-                          width: 5.w,
-                          height: 5.w,
-                          decoration: const BoxDecoration(
-                            color: AppColors.primary,
-                            shape: BoxShape.circle,
-                          ),
-                        ),
-                        SizedBox(width: 6.w),
-                        Expanded(
-                          child: Text(
-                            person.knownForDepartment ?? 'Celebrity',
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              color: Colors.white.withValues(alpha: 0.7),
-                              fontSize: 11.sp,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ),
-                      ],
+                    SizedBox(height: 2.h),
+                    Text(
+                      person.knownForDepartment ?? 'Celebrity',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: AppColors.textSecondaryDark,
+                        fontSize: 11.5.sp,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                   ],
                 ),

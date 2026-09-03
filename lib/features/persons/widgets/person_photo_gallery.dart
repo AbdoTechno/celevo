@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:celevo/core/models/person_images_model.dart';
 import 'package:celevo/core/models/popular_person_model.dart';
@@ -41,7 +42,10 @@ class PersonPhotoGallery extends StatelessWidget {
             decoration: BoxDecoration(
               color: AppColors.darkSurface,
               borderRadius: BorderRadius.circular(18.r),
-              border: Border.all(color: AppColors.darkBorder),
+              border: Border.all(
+                color: AppColors.darkBorder.withValues(alpha: 0.8),
+                width: 1,
+              ),
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(18.r),
@@ -54,22 +58,36 @@ class PersonPhotoGallery extends StatelessWidget {
                   ),
                   Positioned.fill(
                     child: Container(
-                      color: Colors.black.withValues(alpha: 0.3),
+                      color: Colors.black.withValues(alpha: 0.45),
                       child: Center(
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const Icon(CupertinoIcons.zoom_in, color: Colors.white),
-                            SizedBox(width: 8.w),
-                            Text(
-                              'Tap to view in Fullscreen & Download',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 13.sp,
-                                fontWeight: FontWeight.w600,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(20.r),
+                          child: BackdropFilter(
+                            filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+                            child: Container(
+                              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+                              decoration: BoxDecoration(
+                                color: Colors.black.withValues(alpha: 0.4),
+                                borderRadius: BorderRadius.circular(20.r),
+                                border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(CupertinoIcons.zoom_in, color: AppColors.primary, size: 16.sp),
+                                  SizedBox(width: 8.w),
+                                  Text(
+                                    'View High-Res Photo',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 13.sp,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
-                          ],
+                          ),
                         ),
                       ),
                     ),
@@ -82,15 +100,18 @@ class PersonPhotoGallery extends StatelessWidget {
       }
 
       return Container(
-        padding: EdgeInsets.all(20.w),
+        padding: EdgeInsets.all(22.w),
         decoration: BoxDecoration(
           color: AppColors.darkSurface,
           borderRadius: BorderRadius.circular(18.r),
-          border: Border.all(color: AppColors.darkBorder),
+          border: Border.all(
+            color: AppColors.darkBorder.withValues(alpha: 0.8),
+            width: 1,
+          ),
         ),
         child: Center(
           child: Text(
-            'No photos available for this person.',
+            'No additional portrait photos available.',
             style: TextStyle(color: AppColors.textSecondaryDark, fontSize: 13.sp),
           ),
         ),
@@ -98,7 +119,7 @@ class PersonPhotoGallery extends StatelessWidget {
     }
 
     return SizedBox(
-      height: 180.h,
+      height: 185.h,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         physics: const BouncingScrollPhysics(),
@@ -107,7 +128,7 @@ class PersonPhotoGallery extends StatelessWidget {
         itemBuilder: (context, index) {
           final profile = profiles[index];
           final fullImageUrl = 'https://image.tmdb.org/t/p/original${profile.filePath}';
-          final thumbUrl = 'https://image.tmdb.org/t/p/w300${profile.filePath}';
+          final thumbUrl = 'https://image.tmdb.org/t/p/w342${profile.filePath}';
 
           return GestureDetector(
             onTap: () {
@@ -127,7 +148,17 @@ class PersonPhotoGallery extends StatelessWidget {
               decoration: BoxDecoration(
                 color: AppColors.darkSurface,
                 borderRadius: BorderRadius.circular(18.r),
-                border: Border.all(color: AppColors.darkBorder),
+                border: Border.all(
+                  color: AppColors.darkBorder.withValues(alpha: 0.8),
+                  width: 1,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.25),
+                    blurRadius: 8,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(18.r),
@@ -139,8 +170,12 @@ class PersonPhotoGallery extends StatelessWidget {
                       fit: BoxFit.cover,
                       placeholder: (context, url) => Container(
                         color: AppColors.darkSurface,
-                        child: const Center(
-                          child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.primary),
+                        child: Center(
+                          child: SizedBox(
+                            width: 18.w,
+                            height: 18.w,
+                            child: const CircularProgressIndicator(strokeWidth: 2, color: AppColors.primary),
+                          ),
                         ),
                       ),
                       errorWidget: (context, url, error) => Container(
@@ -156,9 +191,9 @@ class PersonPhotoGallery extends StatelessWidget {
                             end: Alignment.bottomCenter,
                             colors: [
                               Colors.transparent,
-                              Colors.black.withValues(alpha: 0.7),
+                              Colors.black.withValues(alpha: 0.65),
                             ],
-                            stops: const [0.6, 1.0],
+                            stops: const [0.65, 1.0],
                           ),
                         ),
                       ),
@@ -166,16 +201,22 @@ class PersonPhotoGallery extends StatelessWidget {
                     Positioned(
                       bottom: 8.h,
                       right: 8.w,
-                      child: Container(
-                        padding: EdgeInsets.all(4.w),
-                        decoration: BoxDecoration(
-                          color: Colors.black.withValues(alpha: 0.6),
-                          shape: BoxShape.circle,
-                        ),
-                        child: Icon(
-                          CupertinoIcons.zoom_in,
-                          color: Colors.white,
-                          size: 14.sp,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(12.r),
+                        child: BackdropFilter(
+                          filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
+                          child: Container(
+                            padding: EdgeInsets.all(5.w),
+                            decoration: BoxDecoration(
+                              color: Colors.black.withValues(alpha: 0.5),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(
+                              CupertinoIcons.zoom_in,
+                              color: Colors.white,
+                              size: 13.sp,
+                            ),
+                          ),
                         ),
                       ),
                     ),

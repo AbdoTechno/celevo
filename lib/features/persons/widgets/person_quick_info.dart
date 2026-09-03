@@ -2,6 +2,7 @@ import 'package:celevo/core/models/person_details_model.dart';
 import 'package:celevo/core/models/popular_person_model.dart';
 import 'package:celevo/core/theme/app_colors.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class PersonQuickInfo extends StatelessWidget {
@@ -16,50 +17,50 @@ class PersonQuickInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: _buildStatCard(
+            icon: CupertinoIcons.person_crop_circle_fill,
+            label: 'GENDER',
+            value: _getGender(details?.gender ?? personModel.gender),
+          ),
+        ),
+        SizedBox(width: 10.w),
+        Expanded(
+          child: _buildStatCard(
+            icon: CupertinoIcons.film,
+            label: 'DEPARTMENT',
+            value: details?.knownForDepartment ?? personModel.knownForDepartment ?? 'N/A',
+          ),
+        ),
+        SizedBox(width: 10.w),
+        Expanded(
+          child: _buildStatCard(
+            icon: CupertinoIcons.chart_bar_alt_fill,
+            label: 'POPULARITY',
+            value: (details?.popularity ?? personModel.popularity)?.toStringAsFixed(1) ?? 'N/A',
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStatCard({
+    required IconData icon,
+    required String label,
+    required String value,
+  }) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 14.h),
       decoration: BoxDecoration(
         color: AppColors.darkSurface,
-        borderRadius: BorderRadius.circular(18.r),
-        border: Border.all(color: AppColors.darkBorder),
+        borderRadius: BorderRadius.circular(14.r),
+        border: Border.all(
+          color: AppColors.darkBorder,
+          width: 1,
+        ),
       ),
-      child: Row(
-        children: [
-          Expanded(
-            child: _buildStatItem(
-              icon: CupertinoIcons.person_fill,
-              title: 'Gender',
-              value: _getGender(details?.gender ?? personModel.gender),
-            ),
-          ),
-          _buildVerticalDivider(),
-          Expanded(
-            child: _buildStatItem(
-              icon: CupertinoIcons.briefcase_fill,
-              title: 'Department',
-              value: details?.knownForDepartment ?? personModel.knownForDepartment ?? 'N/A',
-            ),
-          ),
-          _buildVerticalDivider(),
-          Expanded(
-            child: _buildStatItem(
-              icon: CupertinoIcons.chart_bar_fill,
-              title: 'Popularity',
-              value: (details?.popularity ?? personModel.popularity)?.toStringAsFixed(1) ?? 'N/A',
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildStatItem({
-    required IconData icon,
-    required String title,
-    required String value,
-  }) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 4.w),
       child: Column(
         children: [
           Icon(
@@ -67,37 +68,30 @@ class PersonQuickInfo extends StatelessWidget {
             size: 20.sp,
             color: AppColors.primary,
           ),
-          SizedBox(height: 6.h),
+          SizedBox(height: 8.h),
           Text(
-            title,
+            label,
             style: TextStyle(
               color: AppColors.textMutedDark,
-              fontSize: 11.sp,
-              fontWeight: FontWeight.w500,
+              fontSize: 10.sp,
+              fontWeight: FontWeight.w600,
+              letterSpacing: 0.5,
             ),
           ),
-          SizedBox(height: 3.h),
+          SizedBox(height: 4.h),
           Text(
             value,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: AppColors.textPrimaryDark,
-              fontSize: 12.sp,
+              color: Colors.white,
+              fontSize: 13.sp,
               fontWeight: FontWeight.w700,
             ),
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildVerticalDivider() {
-    return Container(
-      width: 1,
-      height: 40.h,
-      color: AppColors.darkBorder.withValues(alpha: 0.65),
     );
   }
 

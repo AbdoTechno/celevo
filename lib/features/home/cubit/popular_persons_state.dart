@@ -1,7 +1,11 @@
 import 'package:celevo/core/models/popular_person_model.dart';
+import 'package:equatable/equatable.dart';
 
-abstract class PopularPersonsState {
+abstract class PopularPersonsState extends Equatable {
   const PopularPersonsState();
+
+  @override
+  List<Object?> get props => [];
 }
 
 class PopularPersonsInitial extends PopularPersonsState {
@@ -31,6 +35,17 @@ class PopularPersonsSuccess extends PopularPersonsState {
     this.searchQuery = '',
   });
 
+  @override
+  List<Object?> get props => [
+        persons,
+        filteredPersons,
+        currentPage,
+        totalPages,
+        isLoadingMore,
+        selectedDepartment,
+        searchQuery,
+      ];
+
   PopularPersonsSuccess copyWith({
     List<PersonModel>? persons,
     List<PersonModel>? filteredPersons,
@@ -57,4 +72,7 @@ class PopularPersonsError extends PopularPersonsState {
   final String message;
 
   const PopularPersonsError(this.message);
+
+  @override
+  List<Object?> get props => [message];
 }
