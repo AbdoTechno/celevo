@@ -1,4 +1,4 @@
-# 🎬 Celevo — Celebrity & Cinema Discovery App
+# Celevo - Celebrity and Cinema Discovery App
 
 <p align="center">
   <img src="https://img.shields.io/badge/Flutter-%2302569B.svg?style=for-the-badge&logo=Flutter&logoColor=white" alt="Flutter" />
@@ -14,76 +14,76 @@
 
 ---
 
-## ✨ Key Features
+## Key Features
 
-### 🌟 1. Home & Discovery (Popular Celebrities)
+### 1. Home and Discovery (Popular Celebrities)
 - **TMDb Integration:** Fetches popular celebrities with dynamic pagination (infinite scroll).
-- **Instant Search & Department Filters:** Filter actors, directors, writers, and crew in real time with category pills.
+- **Instant Search and Department Filters:** Filter actors, directors, writers, and crew in real time with category pills.
 - **Responsive Layout:** Responsive grid with smooth image loading and shimmer placeholders via `cached_network_image`.
 - **Quick Favorites Toggle:** Add or remove celebrities directly from their card with instant visual feedback.
 
-### 👤 2. Celebrity Details & Filmography
+### 2. Celebrity Details and Filmography
 - **Hero Header:** Parallax header transition with smooth gradient overlays.
 - **Key Metrics:** Gender, department, popularity score, birth date, age calculation, and birthplace.
 - **Expandable Biography:** Seamless "Read More / Read Less" expandable text.
 - **Filmography Carousel:** Horizontal list of "Known For" movies and TV series.
 - **High-Res Photo Gallery:** Grid of available celebrity portraits.
 
-### 🖼️ 3. Fullscreen Interactive Photo Viewer
-- **Pinch-to-Zoom & Pan:** Smooth gesture zooming powered by `photo_view`.
+### 3. Fullscreen Interactive Photo Viewer
+- **Pinch-to-Zoom and Pan:** Smooth gesture zooming powered by `photo_view`.
 - **Save to Gallery:** Direct image download to device storage via `gal` with automatic permission handling and feedback SnackBars.
 
-### 🤖 4. AI Cinema Assistant (Google Gemini)
+### 4. AI Cinema Assistant (Google Gemini)
 - **Interactive Chat:** Natural language conversations about movies, trivia, casting, and celebrity biographies.
 - **Powered by Gemini API:** Uses `gemini-3.6-flash` with automatic fallback to `gemini-3.5-flash-lite` for high uptime.
 - **Modern Chat Interface:** Chat bubbles, typing/generating indicators, error recovery, and clear chat option.
 
-### ❤️ 5. Offline Favorites Management
+### 5. Offline Favorites Management
 - **Local Persistence:** Saves favorite celebrities locally using `path_provider` and JSON serialization without third-party database overhead.
 - **Two-Way Sync:** Synchronized state across Home, Details, and Favorites screens.
 - **Empty State UI:** Clean graphics and easy navigation when no favorites are saved.
 
 ---
 
-## 🏛️ Architecture & Clean Code
+## Architecture and Clean Code
 
 The app follows **Clean Architecture** principles structured by feature:
 
 ```
 lib/
 ├── core/
-│   ├── constants/             # API constants & endpoints
+│   ├── constants/             # API constants and endpoints
 │   ├── di/                    # Dependency Injection (GetIt service locator)
-│   ├── error/                 # Custom error & exception definitions
+│   ├── error/                 # Custom error and exception definitions
 │   ├── models/                # Data models with JSON serialization
 │   ├── network/               # Abstract network layer
 │   │   ├── api_service.dart   # BaseApiService interface
-│   │   ├── dio client/        # Dio implementation & interceptors
-│   │   └── http_client/       # Native HTTP implementation & handler
+│   │   ├── dio client/        # Dio implementation and interceptors
+│   │   └── http_client/       # Native HTTP implementation and handler
 │   ├── repos/                 # Repositories (TMDb, Favorites, AI Chat)
 │   ├── sizes/                 # ScreenUtil sizing utilities
-│   └── theme/                 # Dark theme, colors & typography
+│   └── theme/                 # Dark theme, colors and typography
 ├── features/
-│   ├── home/                  # Popular Celebrities list & filters
-│   │   ├── cubit/             # PopularPersonsCubit & PopularPersonsState (Equatable)
-│   │   ├── view/              # Home & MainNavScaffold views
+│   ├── home/                  # Popular Celebrities list and filters
+│   │   ├── cubit/             # PopularPersonsCubit and PopularPersonsState (Equatable)
+│   │   ├── view/              # Home and MainNavScaffold views
 │   │   └── widgets/           # Cards, search bar, department pills
-│   ├── persons/               # Details & Gallery
-│   │   ├── cubit/             # PersonDetailsCubit & PersonDetailsState
-│   │   ├── view/              # PersonView & FullscreenImageViewer
+│   ├── persons/               # Details and Gallery
+│   │   ├── cubit/             # PersonDetailsCubit and PersonDetailsState
+│   │   ├── view/              # PersonView and FullscreenImageViewer
 │   │   └── widgets/           # Hero header, metrics, bio, gallery
 │   ├── favorites/             # Offline Favorites
-│   │   ├── cubit/             # FavoritesCubit & FavoritesState
+│   │   ├── cubit/             # FavoritesCubit and FavoritesState
 │   │   ├── view/              # FavoritesView
-│   │   └── widgets/           # Favorite person cards & empty state
+│   │   └── widgets/           # Favorite person cards and empty state
 │   └── chat/                  # AI Cinema Assistant
-│       ├── cubit/             # ChatCubit & ChatState
+│       ├── cubit/             # ChatCubit and ChatState
 │       ├── view/              # ChatView
-│       └── widgets/           # Chat bubbles & message input bar
-└── main.dart                  # App entrypoint, dotenv & locator initialization
+│       └── widgets/           # Chat bubbles and message input bar
+└── main.dart                  # App entrypoint, dotenv and locator initialization
 ```
 
-### 🔄 Dual Network Client Strategy
+### Dual Network Client Strategy
 Celevo features an interchangeable networking layer through `BaseApiService`. You can switch between **Dio** and **Http Client** simply by toggling a flag in `injection_container.dart`:
 
 ```dart
@@ -91,14 +91,14 @@ Celevo features an interchangeable networking layer through `BaseApiService`. Yo
 const bool useDioClient = true; // Set to false to use HttpApiService
 ```
 
-### ⚡ State Management
+### State Management
 - Built using **Bloc / Cubit** (`flutter_bloc`).
 - Strict separation between Cubits and States.
 - State equality comparison optimized with **`Equatable`** to prevent unnecessary UI rebuilds.
 
 ---
 
-## 🔐 Environment Variables Configuration
+## Environment Variables Configuration
 
 API keys are securely loaded at runtime using **`flutter_dotenv`** and kept out of version control via `.gitignore`.
 
@@ -113,13 +113,13 @@ API keys are securely loaded at runtime using **`flutter_dotenv`** and kept out 
    GEMINI_API_KEY=your_gemini_api_key_here
    ```
 
-> 💡 **Where to get keys:**
+> **Where to get keys:**
 > - **TMDb API Key:** Sign up at [The Movie Database (TMDb)](https://www.themoviedb.org/documentation/api) and create an API Key.
 > - **Google Gemini API Key:** Generate a free API Key at [Google AI Studio](https://aistudio.google.com/).
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 - [Flutter SDK](https://docs.flutter.dev/get-started/install) (`>=3.12.0`)
@@ -149,13 +149,13 @@ API keys are securely loaded at runtime using **`flutter_dotenv`** and kept out 
 
 ---
 
-## 🛠️ Tech Stack & Packages
+## Tech Stack and Packages
 
 | Package | Purpose |
 | :--- | :--- |
 | **`flutter_bloc`** | Predictable state management with Cubit |
 | **`equatable`** | Value equality comparison for states |
-| **`get_it`** | Dependency injection & Service Locator |
+| **`get_it`** | Dependency injection and Service Locator |
 | **`dio`** | Powerful HTTP networking with interceptors |
 | **`http`** | Lightweight alternative HTTP networking client |
 | **`flutter_dotenv`** | Secure environment variables loading |
@@ -164,12 +164,12 @@ API keys are securely loaded at runtime using **`flutter_dotenv`** and kept out 
 | **`photo_view`** | Interactive zoom and pan gesture viewer |
 | **`gal`** | Direct photo saving to device gallery |
 | **`path_provider`** | Device file system paths for local JSON storage |
-| **`google_fonts`** | Typography & custom font integration |
+| **`google_fonts`** | Typography and custom font integration |
 
 ---
 
-## 📄 License & Credits
+## License and Credits
 
 - Developed as part of the **ITI Flutter Track**.
-- Movie & celebrity data provided by **[The Movie Database (TMDb)](https://www.themoviedb.org/)**.
+- Movie and celebrity data provided by **[The Movie Database (TMDb)](https://www.themoviedb.org/)**.
 - AI Chat capabilities provided by **[Google Gemini](https://ai.google.dev/)**.
